@@ -1,45 +1,83 @@
-const koaBody = require('koa-body');
-const router = require('koa-router')();
-const User = require('../models/user.js');
+const fs = require('fs');
+const path = require('path');
+const url = require('url');
+const events = require('events');
 
-router.get('/users', async (ctx, next) => {
-  const user = await User.findAll({
-    where: { isDelete: 0 },
+const EventEmitter = new events.EventEmitter();
+
+/**
+ * 获取后缀名
+ * @param {*} EventEmitter 事件监听
+ * @param {*} extname 后缀名
+ */
+const getExt = (EventEmitter, extname) => {
+  fs.readFile('./json/mime.json', (err, data) => {
+    if (err) {
+      console.log(err);
+      return false;
+    }
+    const Mime = JSON.parse(data.toString());
+    EventEmitter.emit('to_mime', Mime[extname] || 'text/html');
+    // callback(Mime[extname]);
   });
-  ctx.body = user;
-});
+};
 
-router.post('/user', koaBody(), async (ctx, next) => {
-  const user = await User.build(ctx.request.body).save();
-  ctx.body = user;
-});
+// /**
+//  * 路由
+//  * @param {*} req
+//  * @param {*} res
+//  * @param {*} staticName 静态资源的路径
+//  */
+// const router = (req, res, staticName) => {
+//   let pathname = url.parse(req.url, true).pathname;
 
-router.put('/user/:id', koaBody(), async (ctx, next) => {
-  const body = ctx.request.body;
-  const user = await User.findById(ctx.params.id);
-  await user.update({...body});
-  ctx.body = user;
-});
+//   // 加载首页
+//   if (pathname === '/') {
+//     pathname = '/index.html';
+//   }
 
-router.delete('/user/:id', async (ctx, next) => {
-  const user = await User.findById(ctx.params.id).then(user => user);
-  user.isDelete = 1;
-  ctx.body = user;
-});
+//   const extname = path.extname(pathname);
+//   // 过滤网站图标
+//   if (pathname !== '/favicon.ico') {
+//     console.log(`${staticName}/${pathname}`);
+//     fs.readFile(`${staticName}/${pathname}`, (err, data) => {
+//       if (err) {
+//         console.log(err);
+//         fs.readFile('static/404.html', (err, data404) => {
+//           if (err) {
+//             console.log(err);
+//             return false;
+//           }
+//           res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+//           res.write(data404);
+//           res.end();
+//         });
+//       } else {
+//         let headType = '';
+//         getExt(EventEmitter, extname);
+//         EventEmitter.on('to_mime', (type) => {
+//           console.log(type);
+//           headType = type;
+//           console.log(headType);
+//           res.writeHead(200, { "Content-Type": `${headType};charset=utf-8` });
+//           // res.write(data); // 事件驱动时，不可用
+//           res.end(data);
+//         });
+//       }
+//     });
+//   }
+// }
 
-router.post('/user-search', koaBody() , async (ctx, next) => {
-  const body = ctx.request.body;
-  const user = await User.findAndCount({
-    where: {
-      isDelete: 0,
-      username: {
-        $like: `%${body.search}%`
-      },
-    },
-    limit: body.limit,
-    offset: body.offset,
-  });
-  ctx.body = user;
-});
+const router = {
+  login: (req, res) => {
+    console.log('login');
+  },
+
+  register: (req, res) => {
+    console.log('register');
+  },
+
+
+};
 
 module.exports = router;

@@ -35,7 +35,17 @@ module.exports = (env) => {
                 polyfill: false,
                 regenerator: true
               }],
-            ]
+            ],
+            "env": {
+              "test": {
+                "presets": [
+                "es2015", "stage-0", "react"
+              ],
+              "plugins": [
+                "transform-decorators-legacy",
+              ]
+              }
+            }
           },
         }],
       }, {
@@ -140,5 +150,5 @@ module.exports = (env) => {
       chunks: false
     }
   };
-  
+
 };

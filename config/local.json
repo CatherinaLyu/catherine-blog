@@ -1,0 +1,6 @@
+{
+  "staticPath": "./../static",
+  "cookie": {
+    "maxAge": 30000
+  }
+}

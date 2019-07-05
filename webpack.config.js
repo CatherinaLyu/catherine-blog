@@ -8,11 +8,12 @@ module.exports = (env) => {
   const isProd = env === 'production';
   return {
     entry: {
-      home: './src/static/js/main.ts',
+      home: './src/static/app/js/main.js',
+      login: './src/static/login/js/main.js',
     },
     output: {
       filename: isProd ? 'js/[name].[hash:8].bundle.js': 'js/[name].bundle.js',
-      path: path.resolve(__dirname, 'build'),
+      path: path.resolve(__dirname, 'build/app'),
       // publicPath: isProd ? ''
       chunkFilename: isProd ? 'js/[name].[chunkhash:8].chunk.js' : 'js/[name].bundle.js',
     },
@@ -80,8 +81,14 @@ module.exports = (env) => {
       new htmlWebpackPlugin({
         chunks: ['home'],
         template: './src/page/template.html',
-        filename: '../../page/home.html',
-        favicon: './src/static/images/favicon.ico',
+        filename: '../page/home.html',
+        favicon: './src/page/favicon.ico',
+      }),
+      new htmlWebpackPlugin({
+        chunks: ['login'],
+        template: './src/page/template.html',
+        filename: '../page/login.html',
+        favicon: './src/page/favicon.ico',
       }),
       new extractTextPlugin({
         filename:'styles/[name].[hash:8].css',
@@ -91,8 +98,7 @@ module.exports = (env) => {
         root: path.resolve(__dirname),
         verbose: true,
         watch: false
-      }),
-      new VueLoaderPlugin()
+      })
     ],
     optimization: {
       splitChunks: {

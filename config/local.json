@@ -1,5 +1,5 @@
 {
-  "staticPath": "./../static",
+  "staticPath": "/build/static/app",
   "cookie": {
     "maxAge": 30000
   }
